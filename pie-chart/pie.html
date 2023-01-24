@@ -1,0 +1,269 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+      * {
+        margin: 0%;
+        padding: 0%;
+      }
+
+      div {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(224, 219, 219);
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="svgContainer"></div>
+    <script>
+      let data = [
+        {
+          total: 100,
+          ir: 60,
+          ifr: 40,
+          year: "2021/01/01",
+        },
+
+        {
+          total: 200,
+          ir: 180,
+          ifr: 20,
+          year: "2022/01/01",
+        },
+      ];
+
+      let width = window.innerWidth;
+
+      let height = window.innerHeight;
+
+      const MARGIN = {
+        left: 60,
+        right: 60,
+        bottom: 40,
+        top: 40,
+      };
+      let svg = d3
+        .selectAll("#svgContainer")
+        .append("svg")
+        .attr("width", width)
+        .attr("height", height);
+
+      let g = svg
+        .append("g")
+        .attr("transform", `translate(${MARGIN.left}, ${MARGIN.top})`);
+
+      //create y-scale
+      const t = d3.transition().duration(750).ease(d3.easeLinear);
+
+      const DOMAIN = [
+        Math.min(...data.map((el) => el.total)) / 2,
+        Math.max(...data.map((el) => el.total)) * 2,
+      ];
+
+      //create range
+      console.log(DOMAIN);
+      let scaleY = d3
+        .scaleLinear()
+        .domain(DOMAIN)
+        .range([height - MARGIN.top - MARGIN.bottom, 0]);
+
+      let axisLeft = d3.axisLeft(scaleY);
+
+      g.append("g").call(axisLeft);
+
+      function subtractYears(date, years) {
+        date.setFullYear(date.getFullYear() - years);
+        return date;
+      }
+
+      function addYears(date, years) {
+        console.log(years);
+        console.log(date.getFullYear() + 1);
+        date.setFullYear(date.getFullYear() + years);
+
+        return date;
+      }
+
+      formatYear = d3.timeFormat("%Y");
+
+      let timeScale = d3
+        .scaleTime()
+        .domain([
+          formatYear(subtractYears(new Date(data[0].year), 1)),
+          formatYear(addYears(new Date(data[data.length - 1].year), 1)),
+        ])
+        .range([0, width - MARGIN.left - MARGIN.right]);
+
+      let axisBottom = d3.axisBottom(timeScale);
+
+      g.append("g")
+        .attr(
+          "transform",
+          `translate(${0}, ${scaleY(
+            Math.min(...data.map((el) => el.total)) / 2
+          )})`
+        )
+        .call(axisBottom);
+
+      /**
+       *
+       * create circle
+       *
+       * */
+      //   let dateData = ;
+      //   console.log(dateData);
+      //   console.log(formatYear("2021"));
+
+      //   console.log(timeScale("2021"));
+
+      let ciecleScale = 100;
+      let groupElement = g
+        .selectAll("g#data")
+        .data(data)
+
+        .join("g")
+        .attr("id", "data")
+        .attr("width", (d, i) => d.total)
+        .attr("transform", (d, i) => {
+          console.log(d);
+          return `translate(${timeScale(
+            new Date(d.year).getFullYear()
+          )},${scaleY(d.total)})`;
+        });
+
+      // let vizShape = groupElement
+      //   .append("circle")
+      //   .attr("r", (d, i) => sqrtScale(d.total));
+      let sqrtScale = d3
+        .scaleSqrt()
+        .domain([0, Math.max(...data.map((el) => el.total))])
+        .range([0, ciecleScale]);
+      var color = d3.scaleOrdinal([
+        "#4daf4a",
+        "#377eb8",
+        "#ff7f00",
+        "#984ea3",
+        "#e41a1c",
+      ]);
+
+      // Generate the pie
+      var pie = d3.pie();
+
+      const arcCounter = d3
+        .arc()
+        .innerRadius(0)
+        .outerRadius((d, i) => 100);
+
+      //Generate groups
+      var arcs = groupElement
+        .selectAll("arc")
+        .data((d, i) => {
+          let tempData = [];
+
+          tempData.push(d["ir"]);
+          tempData.push(d["ifr"]);
+
+          return pie(tempData);
+        })
+        .enter()
+        .append("g")
+        .attr("class", "arc");
+
+      //Draw arc paths
+      arcs
+        .append("path")
+        .attr("fill", function (d, i) {
+          return color(i);
+        })
+        .attr("d", arcCounter);
+
+      //   arcs.each(function (d) {
+      //     console.log(d);
+      //     // console.log(pie.centroid(d.value));
+      //     console.log(arcCounter.centroid());
+      //     // d3.select(this)
+      //     //   .append("text")
+      //     //   .text("ded")
+      //     //   .attr("x", (d.startAngle + d.endAngle) / 2);
+      //   });
+
+      // /draw line
+
+      //   groupElement
+      //     .selectAll("text#legendItem")
+      //     .data(arcCounter)
+      //     .enter()
+      //     .append("text")
+      //     .attr("id", "legendItem")
+      //     .text(function (d) {
+      //       console.log(d);
+
+      //       return "grp " + "s";
+      //     })
+      //     .attr("transform", function (d) {
+      //       return "translate(" + arcCounter.centroid(d) + ")";
+      //     })
+      //     .style("text-anchor", "middle")
+      //     .style("font-size", 17);
+      for (let i = 0; i < data.length; i++) {
+        g.append("line")
+          .attr("x1", 0)
+
+          .attr("y1", scaleY(data[i].total))
+          .attr("y2", scaleY(data[i].total))
+          .attr("stroke", "green")
+          .attr("class", "marks")
+          .attr("stroke-dasharray", "4,1,2")
+          .transition(t)
+          .attr("x2", timeScale(new Date(data[i].year).getFullYear()));
+
+        //createn legend
+
+        let legend = g
+          .append("g")
+
+          .attr("class", "legend")
+          .attr(
+            "transform",
+            `translate(${
+              timeScale(new Date(data[i].year).getFullYear()) - 20
+            },${scaleY(data[i].total) - 120})`
+          );
+
+        let tempData = [];
+
+        tempData.push(data[i]["ir"]);
+        tempData.push(data[i]["ifr"]);
+
+        let key = ["ir", "ifr"];
+
+        legend
+          .selectAll("rect")
+          .data(tempData)
+          .join("rect")
+
+          .attr("y", 0)
+          .attr("width", 10)
+          .attr("height", 10)
+          .attr("fill", (d, index) => color(index))
+          .transition(t)
+          .attr("x", (d, index) => index * 15 + 10);
+
+        legend
+          .selectAll("text")
+          .data(tempData)
+          .join("text")
+          .attr("y", -10)
+          .text((d, i) => key[i])
+          .transition(t)
+          .attr("x", (d, index) => index * 15 + 10);
+      }
+    </script>
+  </body>
+</html>

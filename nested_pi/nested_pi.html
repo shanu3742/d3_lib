@@ -1,0 +1,479 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body{
+            margin: 0%;
+            padding: 0%;
+        }
+      * {
+        margin: 0%;
+        padding: 0%;
+      }
+
+      div {
+        width: 100vw;
+        height: 100vh;
+        background-color: rgb(167, 164, 164);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="svgContainer"></div>
+    <script>
+           let color=['rgba(221, 139, 139,1)','rgba(150, 212, 202,1)','rgba(181, 195, 235,1)','rgba(200, 125, 202,1)','rgba(190, 125, 125,1)','rgba(235, 248, 158,1)']
+      
+      let data = [
+
+      {
+        label:'classA',
+        value:40,
+        children:[
+            {
+                label:'classA_sectioA',
+                value:12,
+                children:[
+                    {
+                label:'classA_sectioA_student1',
+                value:7,
+                    },
+                    {
+                label:'classA_sectioA_student2',
+                value:3,
+                    },
+                    {
+                label:'classA_sectioA_student3',
+                value:2,
+                    }
+                ]
+            },
+            {
+                label:'classA_sectioB',
+                value:15,
+                children:[
+                {
+                label:'classA_sectioB_student1',
+                value:7,
+                    },
+                    {
+                label:'classA_sectioB_student2',
+                value:3,
+                    },
+                    {
+                label:'classA_sectioB_student3',
+                value:5,
+                    }
+                ],
+                
+            },
+            {
+                label:'classA_sectioC',
+                value:13,
+                children:[
+                {
+                label:'classA_sectioC_student1',
+                value:6,
+                    },
+                    {
+                label:'classA_sectioC_student2',
+                value:3,
+                    },
+                    {
+                label:'classA_sectioC_student3',
+                value:4,
+                    }
+                ]
+            }
+        ]
+      },
+      {
+        label:'classB',
+        value:60,
+        children:[
+            {
+                label:'classB_sectioA',
+                value:12,
+                children:[
+                {
+                label:'classB_sectioA_student1',
+                value:6,
+                    },
+                    {
+                label:'classB_sectioA_student2',
+                value:5,
+                    },
+                    {
+                label:'classB_sectioA_student3',
+                value:1,
+                    }
+                ]
+            },
+            {
+                label:'classB_sectioB',
+                value:18,
+                children:[
+                {
+                label:'classB_sectioB_student1',
+                value:3,
+                    },
+                    {
+                label:'classB_sectioB_student2',
+                value:13,
+                    },
+                    {
+                label:'classB_sectioB_student3',
+                value:2,
+                    }
+                ],
+                
+            },
+            {
+                label:'classB_sectioC',
+                value:30,
+                children:[
+                {
+                label:'classB_sectioC_student1',
+                value:1,
+                    },
+                    {
+                label:'classB_sectioC_student2',
+                value:9,
+                children:[
+                    {
+                        label:'shan',
+                        value:4
+                    },
+                    {
+                        label:'sk',
+                        value:2
+                    },
+                    {
+                        label:'tk',
+                        value:2
+                    }
+                ]
+                    },
+                    {
+                label:'classB_sectioC_student3',
+                value:20,
+                    }
+                ]
+            }
+        ]
+      }
+      ,
+      {
+        label:'classC',
+        value:90,
+        children:[
+            {
+                label:'classC_sectioA',
+                value:30,
+                children:[
+                {
+                label:'classC_sectioA_student1',
+                value:11,
+                    },
+                    {
+                label:'classC_sectioA_student2',
+                value:12,
+                    },
+                    {
+                label:'classC_sectioA_student3',
+                value:7,
+                    }
+                ]
+            },
+            {
+                label:'classC_sectioB',
+                value:20,
+                children:[
+                {
+                label:'classC_sectioB_student1',
+                value:1,
+                    },
+                    {
+                label:'classC_sectioB_student2',
+                value:16,
+                    },
+                    {
+                label:'classC_sectioB_student3',
+                value:13,
+                    }
+                ],
+                
+            },
+            {
+                label:'classC_sectioC',
+                value:40,
+                children:[
+                {
+                label:'classC_sectioC_student1',
+                value:21,
+                children:[
+                    {
+                        label:'shanu',
+                        value:22
+                    },
+                    {
+                        label:'sk',
+                        value:18
+                    },
+                    {
+                        label:'tk',
+                        value:11
+                    }
+                ]
+                    },
+                    {
+                label:'classC_sectioC_student2',
+                value:12,
+                    },
+                    {
+                label:'classC_sectioC_student3',
+                value:7,
+                    }
+                ]
+            }
+        ]
+      }
+      ]
+
+   
+
+const updatedPiePattern =(value,oData,chartData,arc) =>{
+
+    // get indexofOBJECT
+
+
+
+
+console.log(value)
+console.log(arc.target.attributes.fill.value)
+
+let currentClickedDataIndex= oData.findIndex(object => {
+  return object.label === value.data.label;
+});
+
+
+console.log(currentClickedDataIndex)
+
+
+const pieButton = document.getElementById('pie-button')
+let childId= `children_${currentClickedDataIndex}`
+pieValue=`${pieButton.attributes.value.value}-${childId}`
+
+
+
+    createPi(value.data.children,pieValue,chartData,arc.target.attributes.fill.value)
+}
+
+
+//back func imp
+
+const goBack = (chartData) => {
+
+    const pieButton = document.getElementById('pie-button')
+
+    let pieValue = pieButton.attributes.value.value
+
+    console.log(pieValue)
+
+    if(pieButton.attributes.value.value ==='0'){
+        return 
+    }
+    let pieArry = pieValue.split('-')
+
+
+    console.log(pieArry)
+
+
+    //take the  allway last button value for manipulation
+    // let  dataToUpdatePie = pieArry[pieArry.length-1]
+
+    //rest need to pass to update the pie
+    pieArry.length = pieArry.length-1
+    console.log(pieArry)
+
+    console.log(chartData)
+    let tempData = chartData;
+
+    for(let  i=1;i<pieArry.length;i++){
+
+        tempData = chartData[parseInt(pieArry[i].split('_')[1])].children
+        console.log(parseInt(pieArry[i].split('_')[1]))
+
+    }
+    let updatedButtonValue = pieArry.join('-')
+
+   
+    createPi(tempData,updatedButtonValue,chartData, pieArry?.length >1? pieButton.attributes.fill.value:"")
+
+    //
+   
+
+}
+
+  function createPi(data,backIndex,oData,pieColor){
+    
+    let colorScale = d3.scaleLinear().domain([0,Math.max(...data.map((el) => el.value))]).range([0, 1])
+
+    console.log(data)
+
+    let calculateTotalValue = data.reduce(function (acc, obj) { return acc + obj.value; }, 0);
+    // console.log(calculateTotalValue)
+    console.log(calculateTotalValue)
+    let colorValue = pieColor.split('(')[1]?.split(')')[0]?.split(',')
+    if(colorValue?.length>0){
+        colorValue.length=colorValue?.length-1;
+        colorValue= colorValue?.join(',')
+    }
+    
+  
+
+    console.log(colorValue)
+
+    // rgba(255,0,0,0.3);
+    
+  //create svg 
+ 
+  const     DIMENSION ={
+    width:400,
+    height:150,
+    top:100,
+    left:150,
+    right:50,
+    bottom:100
+
+  }
+//REMOVE everyThing first
+
+if(d3.select('#svgContainer').select('svg')){
+    d3.select('#svgContainer').select('svg').remove()
+}
+      // selections
+      let svg = d3
+      .select('#svgContainer')
+      .append('svg')
+      .classed("sunburst-chart-svg", true)
+      .attr("width",DIMENSION.width+DIMENSION.left+DIMENSION.right)
+      .attr("height", DIMENSION.height+DIMENSION.bottom+DIMENSION.top);
+
+
+
+    //   legend
+
+   
+
+       //sunburst diagram
+  const sunburst = svg
+      .append("g")
+      .attr('class','sunburst-chart-container')
+      .attr(
+        "transform",
+        `translate(${DIMENSION.width/2}, ${DIMENSION.top})`
+      );
+
+
+
+      let  pie = d3.pie()
+    .value(function(d) { return d.value });
+    let pieGenerator = pie(data)
+
+    let outerRadius = DIMENSION.width/4;
+    var innerRadius = DIMENSION.width/6;
+    var arc = d3.arc()
+                    .innerRadius(innerRadius)
+                    .outerRadius(outerRadius).padAngle(0.5).padRadius(10)
+
+    
+
+
+
+
+    var arcs = sunburst.selectAll("g.arc")
+                  .data(pie(data))
+                  .enter()
+                  .append("g")
+                  .attr("class",(d,i) => {
+                    console.log(d,i)
+                   return `arc${i}`
+                  })
+                  .attr("transform", "translate(" + outerRadius + "," + outerRadius + ")")
+                  .attr('style' ,(d,i) => {
+                    return `cursor: ${ d.data.children===undefined? 'auto':'pointer'}`
+                  })
+
+                
+
+           
+
+  let path=  arcs.append("path")
+        .attr("fill", function(d, i) {
+            console.log(colorScale(d.value))
+            return pieColor ===''? color[i]: `rgba(${colorValue},${colorScale(d.value)})`;
+        })
+        .attr('stroke',(d,i) =>  pieColor===''?color[i]:pieColor)
+        .attr("d", arc)
+        path
+        .transition()
+            .duration(500)
+            .attrTween("d", function (d) {
+                var i = d3.interpolate(d.endAngle, d.startAngle);
+                return function (t) {
+                    d.startAngle = i(t);
+                    return arc(d);
+                }
+            })
+    path.on('click',(d,i) =>
+
+
+i.data
+.children!==undefined && updatedPiePattern(i,data,oData,d)
+)
+
+    arcs.append("text")
+        .attr("transform", function(d) {
+            return "translate(" + arc.centroid(d) + ")";
+        })
+        .attr("text-anchor", "middle")
+        .text(function(d) {
+            return d.data.value;
+        });
+
+
+
+        //let's create a circle that consits  label
+        // +e.target.attributes.value.value;
+
+let circle = sunburst.append('circle').attr('style','cursor:pointer').attr('id','pie-button').attr('fill',pieColor===''?`rgb(167, 164, 164)`:pieColor).attr('cx',outerRadius).attr('cy',outerRadius).attr('value',backIndex)
+circle.attr('r',0).transition().duration(500).attr('r',(DIMENSION.width/6)-5)
+circle.on('click',() => goBack(oData))
+
+let textContainer = sunburst.append('g').attr('style','cursor:pointer').attr('transform',`translate(${outerRadius-15},${outerRadius})`)
+let title = textContainer.append('text').attr('x',-10).attr('y',0).text(`total:`).attr('style','opacity:0')
+title.transition().duration(500).attr('style','opacity:1')
+title.on('click',() => goBack(oData))
+let titleValue =textContainer.append('text').attr('x',30).attr('y',0).text(`${calculateTotalValue}`).attr('style','opacity:0')
+titleValue.transition().duration(500).attr('style','opacity:1;font-weight:bold')
+titleValue.on('click',() => goBack(oData))
+  }
+
+ 
+  createPi(data,0,data,'')
+
+
+  
+    </script>
+  </body>
+</html>

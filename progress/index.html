@@ -1,0 +1,102 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <style>
+      body {
+        background-color: lightgray;
+      }
+      .progress-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 10vw;
+        transform: rotateX(-15deg) rotateY(-45deg);
+        transform-style: preserve-3d;
+      }
+      .progress-container > div {
+        width: 30%;
+        position: absolute;
+      }
+
+      .bottom {
+        width: 100%;
+        height: 40px;
+        /* border: 1px solid gray;
+         */
+        transform: rotateX(45deg);
+        transform-origin: bottom;
+        background-color: rgba(254, 254, 254, 0.3);
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      }
+      .front {
+        width: 100%;
+        height: 40px;
+        /* border: 1px solid gray; */
+        background-color: rgba(254, 254, 254, 0.3);
+      }
+      .top {
+        width: 100%;
+        height: 40px;
+        /* border: 1px solid gray; */
+        background-color: rgba(254, 254, 254, 0.3);
+        transform: translate(0, -100%) rotateX(45deg);
+        transform-origin: bottom;
+      }
+      .back {
+        width: 100%;
+        height: 40px;
+        transform: translateZ(-100px) translateX(-74px);
+        /* background-color: rgba(254, 254, 254, 0.3); */
+        /* border: 1px solid gray; */
+        background-color: rgba(254, 254, 254, 0.3);
+        transform-origin: top;
+      }
+      .indicator {
+        width: 60%;
+        background-color: rgba(224, 52, 52, 0.3);
+        height: 100%;
+        animation: indicator 1s;
+        transition: 1s ease-in-out;
+      }
+
+      @keyframes indicator {
+        from {
+          width: 0%;
+        }
+        to {
+          width: 60%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="progress-container">
+      <div class="front"><div class="indicator"></div></div>
+      <div class="bottom"><div class="indicator"></div></div>
+      <div class="top"><div class="indicator"></div></div>
+      <div class="back"><div class="indicator"></div></div>
+      <!-- <div>right</div> -->
+    </div>
+
+    <div class="progress-container">
+      <div class="front"><div class="indicator"></div></div>
+      <div class="bottom"><div class="indicator"></div></div>
+      <div class="top"><div class="indicator"></div></div>
+      <div class="back"><div class="indicator"></div></div>
+      <!-- <div>right</div> -->
+    </div>
+    <div class="progress-container">
+      <div class="front"><div class="indicator"></div></div>
+      <div class="bottom"><div class="indicator"></div></div>
+      <div class="top"><div class="indicator"></div></div>
+      <div class="back"><div class="indicator"></div></div>
+      <!-- <div>right</div> -->
+    </div>
+  </body>
+</html>
